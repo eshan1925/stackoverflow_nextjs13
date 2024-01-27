@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 
-const GlobalSearch = () => {
+const GlobalSearch = ({ placeHolder }: { placeHolder: string }) => {
   return (
     <div className="relative w-full max-w-[600px] max-lg:hidden">
       <div className="background-light800_darkgradient relative flex min-h-[56px] grow items-center gap-1 rounded-xl px-4">
@@ -14,7 +14,12 @@ const GlobalSearch = () => {
           className="cursor-pointer"
         />
 
-        <Input type="text" placeholder="Search globally" value="" className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none"/>
+        <Input
+          type="text"
+          placeholder={placeHolder}
+          value=""
+          className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none"
+        />
       </div>
     </div>
   );
