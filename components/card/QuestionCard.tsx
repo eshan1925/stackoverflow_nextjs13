@@ -57,7 +57,7 @@ const QuestionCard = ({
           alt="user"
           value={author.name}
           title={` - asked ${getTimestamp(createdAt)}`}
-          textStyles="body-medium text-dark_light700"
+          textStyles="body-medium text-dark200_light800"
           href={`/profile/${author._id}`}
           isAuthor
         />
@@ -66,7 +66,7 @@ const QuestionCard = ({
           alt="Upvotes"
           value={formatAndDivideNumber(upvotes)}
           title=" Votes"
-          textStyles="small-medium text-dark_light800"
+          textStyles="small-medium text-dark200_light800"
           href={""}
           isAuthor={false}
         />
@@ -76,7 +76,7 @@ const QuestionCard = ({
           alt="Message"
           value={formatAndDivideNumber(answers.length)}
           title=" Answers"
-          textStyles="small-medium text-dark_light800"
+          textStyles="small-medium text-dark200_light800"
           href={""}
           isAuthor={false}
         />
@@ -85,7 +85,7 @@ const QuestionCard = ({
           alt="eye"
           value={formatAndDivideNumber(views)}
           title=" Views"
-          textStyles="small-medium text-dark_light800"
+          textStyles="small-medium text-dark200_light800"
           href={""}
           isAuthor={false}
         />
