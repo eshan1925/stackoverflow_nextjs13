@@ -19,6 +19,7 @@ import { QuestionsSchema } from "@/lib/validations";
 import { useTheme } from "@/context/ThemeProvider";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
+import { createQuestion } from "@/lib/actions/question.action";
 
 const type: any = "create";
 const Question = () => {
@@ -36,16 +37,14 @@ const Question = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof QuestionsSchema>) {
+  async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setIsSubmitting(true);
     try {
-      // make an async call to our API -> create a question
-      // contain all form data
-      // naviagte to home page
+      // console.log("I was here SU");
+      await createQuestion({});
     } catch (error) {
-      // log error
     }finally{
       setIsSubmitting(false);
     }
