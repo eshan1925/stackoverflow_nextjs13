@@ -1,23 +1,27 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 let isConnected: boolean = false;
 
 export const connectToDatabase = async () => {
-  console.log("I was here MDB");
-  mongoose.set("strictQuery", true);
-  if (!process.env.MONGODB_URL) return console.log("Missing Mongodb URL");
+  mongoose.set('strictQuery', true);
+
+  if(!process.env.MONGODB_URL) {
+    return console.log('MISSING MONGODB_URL');
+  }
 
   if (isConnected) {
-    console.log("MongoDB is already connected");
+    return;
   }
 
   try {
     await mongoose.connect(process.env.MONGODB_URL, {
-      dbName: "DevOverflow",
-    });
+      dbName: 'DevOverflow'
+    })
+
     isConnected = true;
-    console.log("MongoDB is Connected");
+
+    console.log('MongoDB is connected');
   } catch (error) {
-    console.log("MongoDB connection failed", error);
+    console.log('MongoDB connection failed', error)
   }
-};
+}

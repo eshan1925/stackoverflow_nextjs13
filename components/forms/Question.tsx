@@ -20,11 +20,17 @@ import { useTheme } from "@/context/ThemeProvider";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
+import { useRouter, usePathname } from "next/navigation";
 
+interface Props {
+  mongoUserId: string;
+}
 const type: any = "create";
-const Question = () => {
+const Question = ({ mongoUserId }: Props) => {
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
   const { mode } = useTheme();
   // 1. Define your form
   const form = useForm<z.infer<typeof QuestionsSchema>>({
@@ -43,10 +49,20 @@ const Question = () => {
     setIsSubmitting(true);
     try {
       // console.log("I was here SU");
-      await createQuestion({});
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongoUserId),
+        path: pathname,
+      });
+
+      // navigate to  home page
     } catch (error) {
-    }finally{
+      console.log(error);
+    } finally {
       setIsSubmitting(false);
+      router.push("/");
     }
   }
   const handleInputKeyDown = (
