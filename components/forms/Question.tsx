@@ -48,7 +48,6 @@ const Question = ({ mongoUserId }: Props) => {
     // ✅ This will be type-safe and validated.
     setIsSubmitting(true);
     try {
-      // console.log("I was here SU");
       await createQuestion({
         title: values.title,
         content: values.explanation,
