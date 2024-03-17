@@ -61,7 +61,7 @@ const Question = ({ mongoUserId }: Props) => {
       console.log(error);
     } finally {
       setIsSubmitting(false);
-      // router.push("/");
+      router.push("/");
     }
   }
   const handleInputKeyDown = (
