@@ -110,6 +110,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     connectToDatabase();
 
+    // eslint-disable-next-line no-unused-vars
     const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
@@ -132,6 +133,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 
     const savedQuestions = user.saved;
     return { questions: savedQuestions };
+
   } catch (error) {
     console.log(error);
     throw error;
