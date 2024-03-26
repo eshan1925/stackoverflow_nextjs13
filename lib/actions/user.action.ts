@@ -115,7 +115,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     connectToDatabase();
 
     // eslint-disable-next-line no-unused-vars
-    const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
+    const { clerkId, searchQuery } = params;
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
       : {};
@@ -146,8 +146,17 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
-    // const { page = 1, pageSize = 20, filter, searchQuery } = params;
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const { searchQuery } = params;
+
+    const query: FilterQuery<typeof User> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { name: { $regex: new RegExp(searchQuery, "i") } },
+        { username: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+    const users = await User.find(query).sort({ createdAt: -1 });
     return { users };
   } catch (error) {
     console.log(error);
@@ -187,7 +196,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
 
     const totalQuestions = await Question.countDocuments({ author: userId });
 
-    const userQuestions = await Question.find({ auhtor: userId })
+    const userQuestions = await Question.find({ author: userId })
       .sort({ views: -1, upvotes: -1 })
       .populate("tags", "_id name")
       .populate("author", "_id clerkId name picture");

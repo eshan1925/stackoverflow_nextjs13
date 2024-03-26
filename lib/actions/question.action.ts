@@ -15,11 +15,22 @@ import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import Answer from "@/database/answer.model";
 import Interaction from "@/database/interaction.model";
+import { FilterQuery } from "mongoose";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const questions = await Question.find({})
+    const { searchQuery } = params;
+    const query: FilterQuery<typeof Question> = {};
+    console.log(searchQuery);
+    
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+    const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
       .sort({ createdAt: -1 });
@@ -109,7 +120,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
       new: true,
     });
 
-    if(!question){
+    if (!question) {
       throw new Error("Question not found");
     }
 
@@ -120,7 +131,6 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
     throw error;
   }
 }
-
 
 export async function downvoteQuestion(params: QuestionVoteParams) {
   try {
@@ -142,7 +152,7 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
       new: true,
     });
 
-    if(!question){
+    if (!question) {
       throw new Error("Question not found");
     }
 
@@ -163,7 +173,10 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
     await Question.deleteOne({ _id: questionId });
     await Answer.deleteMany({ question: questionId });
     await Interaction.deleteMany({ question: questionId });
-    await Tag.updateMany({ questions: questionId }, { $pull: { questions: questionId }});
+    await Tag.updateMany(
+      { questions: questionId },
+      { $pull: { questions: questionId } }
+    );
 
     revalidatePath(path);
   } catch (error) {
@@ -180,7 +193,7 @@ export async function editQuestion(params: EditQuestionParams) {
 
     const question = await Question.findById(questionId).populate("tags");
 
-    if(!question) {
+    if (!question) {
       throw new Error("Question not found");
     }
 
@@ -198,7 +211,9 @@ export async function editQuestion(params: EditQuestionParams) {
 export async function getHotQuestions() {
   try {
     connectToDatabase();
-    const hotQuestions = await Question.find({}).sort({views:-1,upvotes:-1}).limit(5);
+    const hotQuestions = await Question.find({})
+      .sort({ views: -1, upvotes: -1 })
+      .limit(5);
 
     return hotQuestions;
   } catch (error) {

@@ -4,16 +4,17 @@ import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/card/QuestionCard";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { QuestionFilters } from "@/constants/filters";
-import Link from "next/link";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import {auth} from "@clerk/nextjs";
+import { SearchParamsProps } from "@/types";
 
-const page = async () => {
+const page = async ({searchParams}:SearchParamsProps) => {
 
   const {userId} = auth();
   if(!userId) return null;
   const result = await getSavedQuestions({
     clerkId:userId,
+    searchQuery:searchParams.q,
   });
   return (
     <>
