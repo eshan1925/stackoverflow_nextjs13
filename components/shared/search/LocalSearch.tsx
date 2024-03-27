@@ -47,7 +47,7 @@ const LocalSearch = ({
         }
 
       }
-    }, 1000);
+    }, 500);
     return () => clearTimeout(delayDebounceFn)
   }, [search, route, pathname, router, searchParams, query])
   return (

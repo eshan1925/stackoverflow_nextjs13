@@ -2,7 +2,12 @@
 
 import Answer from "@/database/answer.model";
 import { connectToDatabase } from "../mongoose";
-import { AnswerVoteParams, CreateAnswerParams, DeleteAnswerParams, GetAnswersParams } from "./shared.types";
+import {
+  AnswerVoteParams,
+  CreateAnswerParams,
+  DeleteAnswerParams,
+  GetAnswersParams,
+} from "./shared.types";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import Interaction from "@/database/interaction.model";
@@ -33,10 +38,29 @@ export async function createAnswer(params: CreateAnswerParams) {
 export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase();
-    const { questionId } = params;
+    const { questionId, sortBy } = params;
+
+    let sortOptions = {};
+
+    switch (sortBy) {
+      case "highestUpvotes":
+        sortOptions = { upvotes: -1 };
+        break;
+      case "lowestUpvotes":
+        sortOptions = { upvotes: 1 };
+        break;
+      case "recent":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "old":
+        sortOptions = { createdAt: 1 };
+        break;
+      default:
+        break;
+    }
     const answers = await Answer.find({ question: questionId })
       .populate("author", "_id clerkId name picture")
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
 
     return { answers };
   } catch (error) {
@@ -44,7 +68,6 @@ export async function getAnswers(params: GetAnswersParams) {
     throw error;
   }
 }
-
 
 export async function upvoteAnswer(params: AnswerVoteParams) {
   try {
@@ -66,7 +89,7 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
       new: true,
     });
 
-    if(!answer){
+    if (!answer) {
       throw new Error("Answer not found");
     }
 
@@ -77,7 +100,6 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
     throw error;
   }
 }
-
 
 export async function downvoteAnswer(params: AnswerVoteParams) {
   try {
@@ -99,7 +121,7 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
       new: true,
     });
 
-    if(!answer){
+    if (!answer) {
       throw new Error("Answer not found");
     }
 
@@ -119,12 +141,15 @@ export async function deleteAnswer(params: DeleteAnswerParams) {
 
     const answer = await Answer.findById(answerId);
 
-    if(!answer) {
+    if (!answer) {
       throw new Error("Answer not found");
     }
 
     await Answer.deleteOne({ _id: answerId });
-    await Question.updateMany({ _id: answer.question }, { $pull: { answers: answerId }});
+    await Question.updateMany(
+      { _id: answer.question },
+      { $pull: { answers: answerId } }
+    );
     await Interaction.deleteMany({ answer: answerId });
 
     revalidatePath(path);
