@@ -12,13 +12,13 @@ interface QuestionProps {
   tags: {
     _id: string;
     name: string;
-  }[];
+  }[] | any;
   author: {
     _id: string;
     name: string;
     picture: string;
     clerkId: string;
-  };
+  } | any;
   upvotes: Array<object>;
   views: number;
   answers: Array<object>;
@@ -58,7 +58,7 @@ const QuestionCard = ({
         )}
       </SignedIn>
       <div className="mt-3.5 flex flex-wrap gap-2">
-        {tags.map((tag) => (
+        {tags.map((tag:any) => (
           <RenderTag key={tag._id} _id={tag._id} name={tag.name} />
         ))}
       </div>
