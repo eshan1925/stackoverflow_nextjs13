@@ -7,9 +7,9 @@ interface MetricProps {
   alt: string;
   value: string | number;
   title: string;
-  href: string;
+  href?: string;
   textStyles: string;
-  isAuthor: boolean;
+  isAuthor?: boolean;
 }
 const Metric = ({
   imgUrl,
