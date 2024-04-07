@@ -8,13 +8,15 @@ import { HomePageFilters } from "@/constants/filters";
 import Link from "next/link";
 import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
-export default async function Home({searchParams}:SearchParamsProps) {
+export default async function Home({ searchParams }: SearchParamsProps) {
   const result = await getQuestions({
-    searchQuery:searchParams.q,
-    filter:searchParams.filter,
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page:searchParams.page? +searchParams.page:1,
   });
-  
+
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -66,6 +68,13 @@ export default async function Home({searchParams}:SearchParamsProps) {
             linkTitle="Ask a Questions"
           />
         )}
+      </div>
+      <div className="mt-10">
+        {/* Here this + is used for conversion of string to integer */}
+        <Pagination
+        pageNumber={searchParams?.page ? +searchParams.page : 1}
+        isNext={result.isNext}
+        />
       </div>
     </>
   );

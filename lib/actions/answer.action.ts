@@ -38,8 +38,8 @@ export async function createAnswer(params: CreateAnswerParams) {
 export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase();
-    const { questionId, sortBy } = params;
-
+    const { questionId, sortBy,page=1,pageSize=5 } = params;
+    const skipAmount = (page - 1) * pageSize;
     let sortOptions = {};
 
     switch (sortBy) {
@@ -59,10 +59,15 @@ export async function getAnswers(params: GetAnswersParams) {
         break;
     }
     const answers = await Answer.find({ question: questionId })
-      .populate("author", "_id clerkId name picture")
-      .sort(sortOptions);
+    .populate("author", "_id clerkId name picture")
+    .sort(sortOptions)
+    .limit(pageSize)
+    .skip(skipAmount)
 
-    return { answers };
+    const totalAnswer = await Answer.countDocuments({question:questionId})
+
+    const isNext = totalAnswer > skipAmount+answers.length;
+    return { answers,isNext };
   } catch (error) {
     console.log(error);
     throw error;

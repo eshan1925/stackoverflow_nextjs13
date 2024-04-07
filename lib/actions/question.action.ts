@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use server";
 
 import Question from "@/database/question.model";
@@ -20,7 +21,9 @@ import { FilterQuery } from "mongoose";
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 5 } = params;
+
+    const skipAmount = (page-1)*pageSize;
     const query: FilterQuery<typeof Question> = {};
 
     if (searchQuery) {
@@ -34,13 +37,13 @@ export async function getQuestions(params: GetQuestionsParams) {
 
     switch (filter) {
       case "newest":
-        sortOptions = {createdAt:-1}
+        sortOptions = { createdAt: -1 };
         break;
       case "frequent":
-        sortOptions = {views:-1}
+        sortOptions = { views: -1 };
         break;
       case "unanswered":
-        query.answers = {$size:0}
+        query.answers = { $size: 0 };
         break;
 
       default:
@@ -49,9 +52,14 @@ export async function getQuestions(params: GetQuestionsParams) {
     const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
+      .skip(skipAmount)
+      .limit(pageSize)
       .sort(sortOptions);
 
-    return { questions };
+    const totalQuestions = await Question.countDocuments(query);
+    const isNext = totalQuestions>skipAmount+questions.length;
+
+    return { questions,isNext };
   } catch (error) {
     console.log(error);
     throw error;

@@ -7,6 +7,7 @@ import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import {auth} from "@clerk/nextjs";
 import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 const page = async ({searchParams}:SearchParamsProps) => {
 
@@ -15,7 +16,8 @@ const page = async ({searchParams}:SearchParamsProps) => {
   const result = await getSavedQuestions({
     clerkId:userId,
     searchQuery:searchParams.q,
-    filter:searchParams.filter
+    filter:searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
   return (
     <>
@@ -60,6 +62,14 @@ const page = async ({searchParams}:SearchParamsProps) => {
             linkTitle="Ask a Questions"
           />
         )}
+      </div>
+
+      <div className="mt-10">
+        {/* Her this + is used for conversion of string to integer */}
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
       </div>
     </>
   );

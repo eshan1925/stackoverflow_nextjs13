@@ -1,5 +1,6 @@
 import QuestionCard from "@/components/card/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { IQuestion } from "@/database/question.model";
 import { getQuestionsByTagId } from "@/lib/actions/tag.action";
@@ -9,7 +10,7 @@ import React from "react";
 const Page = async ({ params, searchParams }: URLProps) => {
     const result = await getQuestionsByTagId({
         tagId: params.id,
-        page: 1,
+        page: searchParams.page ? +searchParams.page : 1,
         searchQuery: searchParams.q,
     });
   return (
@@ -51,6 +52,13 @@ const Page = async ({ params, searchParams }: URLProps) => {
             linkTitle="Ask a Questions"
           />
         )}
+      </div>
+      <div className="mt-10">
+        {/* Her this + is used for conversion of string to integer */}
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
       </div>
     </>
   );
