@@ -1,10 +1,76 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
+import GlobalResult from "./GlobalResult";
 
-const GlobalSearch = ({ placeHolder }: { placeHolder: string }) => {
+const GlobalSearch = ({
+  route,
+  placeHolder,
+}: {
+  route: string;
+  placeHolder: string;
+}) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const searchContainerRef = useRef(null);
+  const query = searchParams.get("q");
+  const [search, setSearch] = useState(query || "");
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(()=>{
+    const handleOutsideClick = (event:any)=>{
+      // @ts-ignore
+      if(searchContainerRef.current && !searchContainerRef.current.contains(event.target)){
+        setIsOpen(false);
+        setSearch("");
+      }
+    }
+    setIsOpen(false);
+    document.addEventListener("click",handleOutsideClick);
+    return () => {
+      document.removeEventListener("click",handleOutsideClick);
+    }
+  },[pathname])
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (search) {
+        const newUrl = formUrlQuery({
+          params: searchParams.toString(),
+          key: "global",
+          value: search,
+        });
+
+        router.push(newUrl, { scroll: false });
+      } else {
+        if (query) {
+          const newUrl = removeKeysFromQuery({
+            params: searchParams.toString(),
+            keysToRemove: ["global", "type"],
+          });
+
+          router.push(newUrl, { scroll: false });
+        }
+
+        if (pathname === route) {
+          const newUrl = removeKeysFromQuery({
+            params: searchParams.toString(),
+            keysToRemove: ["global", "type"],
+          });
+
+          router.push(newUrl, { scroll: false });
+        }
+      }
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, router,route, pathname, searchParams, query]);
   return (
-    <div className="relative w-full max-w-[600px] max-lg:hidden">
+    <div className="relative w-full max-w-[600px] max-lg:hidden" ref={searchContainerRef}>
       <div className="background-light800_darkgradient relative flex min-h-[56px] grow items-center gap-1 rounded-xl px-4">
         <Image
           src="/assets/icons/search.svg"
@@ -17,9 +83,16 @@ const GlobalSearch = ({ placeHolder }: { placeHolder: string }) => {
         <Input
           type="text"
           placeholder={placeHolder}
-          className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            if (!isOpen) setIsOpen(true);
+            if (e.target.value === "" && isOpen) setIsOpen(false);
+          }}
+          className="paragraph-regular no-focus placeholder text-dark400_light700 background-light800_darkgradient border-none shadow-none outline-none"
         />
       </div>
+      {isOpen && <GlobalResult />}
     </div>
   );
 };
