@@ -23,7 +23,7 @@ export async function getQuestions(params: GetQuestionsParams) {
     connectToDatabase();
     const { searchQuery, filter, page = 1, pageSize = 5 } = params;
 
-    const skipAmount = (page-1)*pageSize;
+    const skipAmount = (page - 1) * pageSize;
     const query: FilterQuery<typeof Question> = {};
 
     if (searchQuery) {
@@ -57,9 +57,9 @@ export async function getQuestions(params: GetQuestionsParams) {
       .sort(sortOptions);
 
     const totalQuestions = await Question.countDocuments(query);
-    const isNext = totalQuestions>skipAmount+questions.length;
+    const isNext = totalQuestions > skipAmount + questions.length;
 
-    return { questions,isNext };
+    return { questions, isNext };
   } catch (error) {
     console.log(error);
     throw error;
@@ -95,10 +95,20 @@ export async function createQuestion(params: CreateQuestionParams) {
     });
 
     // Create an interaction record for the user's ask_question action
+    await Interaction.create({
+      user: author,
+      action: "ask_question",
+      question: question._id,
+      tags: tagDocuments,
+    });
     // Increment author's reputation by +5 points for creating a question
+
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
     console.log(path);
     revalidatePath(path);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
@@ -148,7 +158,15 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
       throw new Error("Question not found");
     }
 
-    // Increment the users reputation
+    // Increment the user's reputation by +1/-1 for upvoting/downvoting
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasupVoted ? -1 : 1 },
+    });
+
+    // Increment the author's reputation by +10/-10 for receving an upvote/downvote to the question
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasupVoted ? -10 : 10 },
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -181,6 +199,15 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
     }
 
     // Increment the users reputation
+
+    // Increment author's reputation
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? -2 : 2 },
+    });
+
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasdownVoted ? -10 : 10 },
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -245,3 +272,7 @@ export async function getHotQuestions() {
     throw error;
   }
 }
+
+// Chapter 139 implement more on reputation like when a question is viewed more,
+// upvoting twice from a user => decrease reputation, checks for if the user is
+// answering his own question and getting reputation.
