@@ -18,6 +18,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { usePathname } from "next/navigation";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   question: string;
@@ -54,6 +55,11 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         const editor = editorRef.current as any;
         editor.setContent("");
       }
+
+      return toast({
+        title: `Answer Created Successfully`,
+        variant: 'default'
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -87,6 +93,10 @@ const Answer = ({ question, questionId, authorId }: Props) => {
       }
       // alert(aiAnswer.reply);
       // Toast...
+      return toast({
+        title: `Answer fetched from AI Successfully`,
+        variant: 'default'
+      });
     } catch (error) {
       console.log(error);
     } finally {

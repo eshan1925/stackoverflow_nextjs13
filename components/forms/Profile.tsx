@@ -19,6 +19,7 @@ import { Textarea } from "../ui/textarea";
 import { ProfileSchema } from "@/lib/validations";
 import { updateUser } from "@/lib/actions/user.action";
 import { usePathname, useRouter } from "next/navigation";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   clerkId: string;
@@ -55,7 +56,11 @@ const Profile = ({ clerkId, user }: Props) => {
         },
         path: pathname,
       });
-      //   router.back();
+        router.back();
+        return toast({
+          title: `Profile Details Saved Successfully`,
+          variant: 'default'
+        });
     } catch (error) {
       console.log(error);
     } finally {

@@ -6,7 +6,6 @@ import { getUserById } from "@/lib/actions/user.action";
 
 const Page = async () => {
   const { userId } = auth();
-  console.log(userId);
 
   if (!userId) redirect("/sign-in");
   const mongoUser = await getUserById({ userId });
