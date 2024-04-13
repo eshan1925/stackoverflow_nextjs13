@@ -52,13 +52,6 @@ const Stats = ({ totalQuestions, totalAnswers,badges,reputation }: Props) => {
             </p>
             <p className="body-medium text-dark400_light700">Answers</p>
           </div>
-
-          <div>
-            <p className="paragraph-semibold text-dark200_light900">
-              {formatAndDivideNumber(reputation)}
-            </p>
-            <p className="body-medium text-dark400_light700">Reputation</p>
-          </div>
         </div>
 
         <StatsCard
