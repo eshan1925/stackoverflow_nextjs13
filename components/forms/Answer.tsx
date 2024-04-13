@@ -56,7 +56,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         editor.setContent("");
       }
 
-      return toast({
+      toast({
         title: `Answer Created Successfully`,
         variant: 'default'
       });
@@ -92,8 +92,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         editor.setContent(formattedAnswer);
       }
       // alert(aiAnswer.reply);
-      // Toast...
-      return toast({
+      toast({
         title: `Answer fetched from AI Successfully`,
         variant: 'default'
       });

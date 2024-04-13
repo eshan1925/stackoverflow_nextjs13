@@ -62,7 +62,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
           path: pathname,
         });
         router.push(`/question/${parsedQuestionDetails._id}`);
-        return toast({
+        toast({
           title: `Question Edited Successfully`,
           variant: 'default'
         });
@@ -75,7 +75,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
           path: pathname,
         });
         router.push("/");
-        return toast({
+        toast({
           title: `Question Created Successfully`,
           variant: 'default'
         });

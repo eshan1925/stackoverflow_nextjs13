@@ -57,7 +57,7 @@ const Profile = ({ clerkId, user }: Props) => {
         path: pathname,
       });
         router.back();
-        return toast({
+        toast({
           title: `Profile Details Saved Successfully`,
           variant: 'default'
         });
