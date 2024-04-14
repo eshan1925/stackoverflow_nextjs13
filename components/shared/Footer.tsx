@@ -15,7 +15,7 @@ export default function Footer() {
               height={23}
             />
             <p className="h2-bold text-dark-100 dark:text-light-900">
-              Dev <span className="text-primary-500">OverFlow</span>
+              Dev <span className="text-primary-500">Answers</span>
             </p>
           </div>
           <p>Platform to share programming questions and answers.</p>
@@ -25,7 +25,7 @@ export default function Footer() {
             <p className="base-medium">Developed By:</p>
             <div className="flex-center gap-2">
               <Image
-                src="/assets/images/profile.jpg"
+                src="/assets/Profile.png"
                 alt="Profile"
                 width={50}
                 height={50}
@@ -38,7 +38,7 @@ export default function Footer() {
           </div>
           <div className="flex-center gap-2">
             <div className="h-6 w-px bg-slate-500"></div>
-            <Link href="https://www.linkedin.com/in/eshangupta25/">
+            <Link href="https://www.linkedin.com/in/eshangupta25">
               <LinkedInLogoIcon
                 className="text-blue-500"
                 width={25}

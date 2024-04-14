@@ -2,7 +2,6 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import Footer from "@/components/shared/Footer";
 import { sidebarLinks } from "@/constants";
-import { ReloadIcon } from "@radix-ui/react-icons";
 
 export default function Loading() {
   return (
@@ -17,7 +16,7 @@ export default function Loading() {
             height={23}
           />
           <p className="h2-bold text-dark-100 dark:text-light-900 max-sm:hidden">
-            Dev <span className="text-primary-500">Answers</span>
+            Dev <span className="text-primary-500">Overflow</span>
           </p>
         </div>
         <Skeleton className="childSkeleton flex-start relative h-[50px] max-w-[800px] grow rounded-xl px-3 max-lg:hidden">
@@ -40,7 +39,7 @@ export default function Loading() {
         </div>
       </Skeleton>
 
-      <div className="flex">
+      <div className="flex justify-between">
         {/* LeftSideBar */}
         <Skeleton className="sticky left-0 top-0 flex h-screen w-[72px] flex-col gap-4 p-3 pt-24 max-sm:hidden lg:w-[230px]">
           <section className="flex flex-1 flex-col gap-4">
@@ -87,14 +86,14 @@ export default function Loading() {
           </section>
         </Skeleton>
 
-        <section className="flex-center min-h-screen flex-1 flex-col gap-4">
+        {/* <section className="flex-center min-h-screen flex-1 flex-col gap-4">
           <ReloadIcon
             className="animate-spin text-primary-500"
             width={100}
             height={100}
           />
           <p className="h3-bold text-dark400_light800">Loading...</p>
-        </section>
+        </section> */}
 
         {/* RightSideBar */}
         <Skeleton className="text-dark500_light700 sticky right-0 top-0 flex h-screen w-[280px] flex-col gap-6 p-3 pt-24 max-xl:hidden">
