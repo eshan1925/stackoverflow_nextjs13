@@ -10,6 +10,7 @@ import {
 import Tag, { ITag } from "@/database/tag.model";
 import { FilterQuery } from "mongoose";
 import Question from "@/database/question.model";
+import Interaction from "@/database/interaction.model";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -18,12 +19,23 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     const { userId } = params;
     const user = await User.findById(userId);
     if (!user) throw new Error("User not Found");
-
-    return [
-      { _id: "1", name: "tag1" },
-      { _id: "2", name: "tag2" },
-      { _id: "3", name: "tag3" },
-    ];
+    const userInteractions = await Interaction.find({ user: userId })
+      .populate("tags")
+      .exec();
+      // Extract tags from user's interactions
+      const userTags = userInteractions.reduce((tags, interaction) => {
+        if (interaction.tags) {
+          tags = tags.concat(interaction.tags);
+        }
+        return tags;
+      }, []);
+      
+      // Get distinct tag IDs from user's interactions
+      const distinctUserTagIds = [
+        // @ts-ignore
+        ...new Set(userTags.map((tag: any) => tag.name)),
+      ];
+    return distinctUserTagIds.slice(0,3);
   } catch (error) {
     console.log(error);
     throw error;

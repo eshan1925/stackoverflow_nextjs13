@@ -10,7 +10,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
 import { toggleSaveQuestion } from "@/lib/actions/user.action";
-import { viewQuestion } from "@/lib/actions/interation.action";
+import { viewQuestion } from "@/lib/actions/interaction.action";
 import { toast } from "../ui/use-toast";
 
 interface Props {

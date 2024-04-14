@@ -73,34 +73,37 @@ const QuestionCard = ({
           href={`/profile/${author._id}`}
           isAuthor
         />
-        <Metric
-          imgUrl="/assets/icons/like.svg"
-          alt="Upvotes"
-          value={formatAndDivideNumber(upvotes.length)}
-          title=" Votes"
-          textStyles="small-medium text-dark200_light800"
-          href={""}
-          isAuthor={false}
-        />
+        <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start">
+          <Metric
+            imgUrl="/assets/icons/like.svg"
+            alt="Upvotes"
+            value={formatAndDivideNumber(upvotes.length)}
+            title=" Votes"
+            textStyles="small-medium text-dark200_light800"
+            href={""}
+            isAuthor={false}
+          />
 
-        <Metric
-          imgUrl="/assets/icons/message.svg"
-          alt="Message"
-          value={formatAndDivideNumber(answers.length)}
-          title=" Answers"
-          textStyles="small-medium text-dark200_light800"
-          href={""}
-          isAuthor={false}
-        />
-        <Metric
-          imgUrl="/assets/icons/eye.svg"
-          alt="eye"
-          value={formatAndDivideNumber(views)}
-          title=" Views"
-          textStyles="small-medium text-dark200_light800"
-          href={""}
-          isAuthor={false}
-        />
+          <Metric
+            imgUrl="/assets/icons/message.svg"
+            alt="Message"
+            value={formatAndDivideNumber(answers.length)}
+            title=" Answers"
+            textStyles="small-medium text-dark200_light800"
+            href={""}
+            isAuthor={false}
+          />
+          <Metric
+            imgUrl="/assets/icons/eye.svg"
+            alt="eye"
+            value={formatAndDivideNumber(views)}
+            title=" Views"
+            textStyles="small-medium text-dark200_light800"
+            href={""}
+            isAuthor={false}
+          />
+
+        </div>
       </div>
     </div>
   );

@@ -16,13 +16,18 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex-center text-dark400_light800 h-full w-full flex-col gap-4">
+    <div className="flex-center text-dark400_light800 size-full flex-col gap-4">
       <h2 className="h2-bold">Something went wrong!</h2>
       <div className="flex-center gap-4">
         <Link href="/">
-          <Button className="btn">Return Home</Button>
+          <Button className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900">
+            Return Home
+          </Button>
         </Link>
-        <Button className="btn" onClick={() => reset()}>
+        <Button
+          className="primary-gradient min-h-[46px] px-4 py-3 !text-light-900"
+          onClick={() => reset()}
+        >
           Try again
         </Button>
       </div>

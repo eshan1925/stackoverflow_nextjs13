@@ -8,7 +8,9 @@ import Interaction from "@/database/interaction.model";
 export async function viewQuestion(params: ViewQuestionParams) {
   try {
     connectToDatabase();
-    const { questionId, userId } = params;
+    // eslint-disable-next-line no-unused-vars
+    const { questionId, userId} = params;
+    if(questionId===null) return;
     // update view count for the question we are currently viewing
     await Question.findByIdAndUpdate(questionId, { $inc: { views: 1 } });
 
@@ -18,14 +20,15 @@ export async function viewQuestion(params: ViewQuestionParams) {
             action:'view',
             question:questionId,
         })
-
-        if(existingInteraction) return console.log("User has already viewed.")
-
+        
+        if(existingInteraction) return;
+        const questionObject = await Question.findById(questionId);
         // create interaction
         await Interaction.create({
             user:userId,
             action:"view",
             question:questionId,
+            tags:questionObject.tags
         })
     }
   } catch (error) {
