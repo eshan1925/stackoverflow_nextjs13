@@ -7,7 +7,12 @@ import NoResult from "@/components/shared/NoResult";
 import Link from "next/link";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+import type { Metadata } from "next";
 
+export const metadata:Metadata = {
+  title:'Tags | DevOverflow',
+  description:'Dev Overflow is a community of developers. Join us.'
+}
 const Page = async ({ searchParams }: SearchParamsProps) => {
   const result = await getAllTags({
     searchQuery: searchParams.q,

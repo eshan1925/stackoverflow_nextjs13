@@ -8,7 +8,12 @@ import { getSavedQuestions } from "@/lib/actions/user.action";
 import {auth} from "@clerk/nextjs";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+import type { Metadata } from "next";
 
+export const metadata:Metadata = {
+  title:'Collection | DevOverflow',
+  description:'Dev Overflow is a community of developers. Join us.'
+}
 const page = async ({searchParams}:SearchParamsProps) => {
 
   const {userId} = auth();

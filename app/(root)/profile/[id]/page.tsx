@@ -12,7 +12,12 @@ import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswersTab from "@/components/shared/AnswersTab";
 import { OpenInNewWindowIcon } from "@radix-ui/react-icons";
+import type { Metadata } from "next";
 
+export const metadata:Metadata = {
+  title:'Profile | DevOverflow',
+  description:'Dev Overflow is a community of developers. Join us.'
+}
 const Page = async ({ params, searchParams }: URLProps) => {
   const userInfo = await getUserInfo({ userId: params.id });
   const { userId: clerkId } = auth();
