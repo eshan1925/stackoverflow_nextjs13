@@ -13,31 +13,61 @@ import Question from "@/database/question.model";
 import Interaction from "@/database/interaction.model";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
-  try {
-    connectToDatabase();
+  // try {
+  //   connectToDatabase();
 
-    const { userId } = params;
-    const user = await User.findById(userId);
-    if (!user) throw new Error("User not Found");
-    const userInteractions = await Interaction.find({ user: userId })
-      .populate("tags")
-      .exec();
-      // Extract tags from user's interactions
-      const userTags = userInteractions.reduce((tags, interaction) => {
-        if (interaction.tags) {
-          tags = tags.concat(interaction.tags);
-        }
-        return tags;
-      }, []);
+  //   const { userId } = params;
+  //   const user = await User.findById(userId);
+  //   if (!user) throw new Error("User not Found");
+  //   const userInteractions = await Interaction.find({ user: userId })
+  //     .populate("tags")
+  //     .exec();
+  //     // Extract tags from user's interactions
+  //     const userTags = userInteractions.reduce((tags, interaction) => {
+  //       if (interaction.tags) {
+  //         tags = tags.concat(interaction.tags);
+  //       }
+  //       return tags;
+  //     }, []);
       
-      // Get distinct tag IDs from user's interactions
-      const distinctUserTagIds = [
-        // @ts-ignore
-        ...new Set(userTags.map((tag: any) => tag.name)),
-      ];
-    return distinctUserTagIds.slice(0,3);
+  //     // Get distinct tag IDs from user's interactions
+  //     const distinctUserTagIds = [
+  //       // @ts-ignore
+  //       ...new Set(userTags.map((tag: any) => tag.name)),
+  //     ];
+  //   return distinctUserTagIds.slice(0,3);
+  // } catch (error) {
+  //   console.log(error);
+  //   throw error;
+  // }
+  try {
+    await connectToDatabase();
+
+    const { userId, limit = 3 } = params;
+
+    // Find the user by clerkId
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Find interactions for the user and group by tags
+    const tagCountMap = await Interaction.aggregate([
+      { $match: { user: user._id, tags: { $exists: true, $ne: [] } } },
+      { $unwind: "$tags" },
+      { $group: { _id: "$tags", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: limit },
+    ]);
+
+    const topTags = tagCountMap.map((tagCount) => tagCount._id);
+
+    // Find the tag documents for the top tags
+    const topTagDocuments = await Tag.find({ _id: { $in: topTags } });
+
+    return topTagDocuments;
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching top interacted tags:", error);
     throw error;
   }
 }
